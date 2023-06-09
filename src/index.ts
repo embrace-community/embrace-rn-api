@@ -4,8 +4,10 @@ const upload = multer({
   storage: multer.memoryStorage(),
 });
 import { Blob } from 'node:buffer';
-
 import { NFTStorage } from 'nft.storage';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const NFT_STORAGE_API_KEY = process.env.NFT_STORAGE_API_KEY;
 
