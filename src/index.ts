@@ -5,10 +5,13 @@ const upload = multer({
 });
 import { Blob } from 'node:buffer';
 
-import { NFTStorage, File } from 'nft.storage';
+import { NFTStorage } from 'nft.storage';
 
-const NFT_STORAGE_API_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDlGOGMyQjNFOTMwNjNENzAwZTA3OGRENEZlMzU1NkM3RDMxMTUzNTgiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY4NjE0Njg2MTg3NiwibmFtZSI6IkVtYnJhY2UgQ29tbXVuaXR5In0.yahUDD1IjE60Yypa9HylVSUL-eVJSV2dSHXMPzlc3TE';
+const NFT_STORAGE_API_KEY = process.env.NFT_STORAGE_API_KEY;
+
+if (!NFT_STORAGE_API_KEY) {
+  throw new Error('Missing storage API key');
+}
 
 const nftStorage = new NFTStorage({ token: NFT_STORAGE_API_KEY });
 
