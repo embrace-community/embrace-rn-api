@@ -76,13 +76,12 @@ app.post(`/profile`, upload.single('image'), async (req, res) => {
       metadataCid,
       avatarCid,
     );
+    res.status(200).json({ metadataCid, avatarCid });
   } catch (e) {
     console.error(e);
     res.status(500).json({ message: 'Something went wrong' });
     return;
   }
-
-  res.status(200).json({ metadataCid, avatarCid });
 });
 
 const server = app.listen(3000, () =>
