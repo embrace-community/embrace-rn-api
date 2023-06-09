@@ -44,7 +44,7 @@ app.post(`/profile`, upload.single('image'), async (req, res) => {
       avatarCid = await nftStorage.storeBlob(imageBlob);
     }
 
-    const image = avatarCid ?? `ipfs://${avatarCid}`;
+    const image = avatarCid ? `ipfs://${avatarCid}` : null;
 
     if (!avatarCid) {
       console.log('No image provided');
