@@ -49,7 +49,7 @@ app.post(`/profile`, upload.single('image'), async (req, res) => {
     if (!avatarCid) {
       console.log('No image provided');
     } else {
-      console.log(`Image uploaded to IPFS with CID ${avatarCid}`);
+      console.log(`Image uploaded to IPFS with CID: ${avatarCid}`);
     }
 
     const metadataBlob = new Blob(
