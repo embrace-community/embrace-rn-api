@@ -2,6 +2,7 @@ import { Blob } from 'node:buffer';
 import Bundlr from '@bundlr-network/client';
 import dotenv from 'dotenv';
 import { Request, Response } from 'express';
+import { UploadResponse } from '@bundlr-network/client/build/cjs/common/types';
 
 dotenv.config();
 
@@ -30,21 +31,21 @@ export const bundlrUpload = async (req: Request, res: Response) => {
   }
 
   try {
-    let avatarId;
+    let avatarTx: UploadResponse | null = null;
     if (file) {
       // We prefer this approach to the client.store() method as we just want the CID not the name of the file appended to the CID
       const imageBlob = Buffer.from(file.buffer);
-      avatarId = await bundlr.upload(imageBlob, {
+      avatarTx = await bundlr.upload(imageBlob, {
         tags: [{ name: 'Content-Type', value: 'image/jpg' }],
       });
     }
 
-    const image = avatarId ? `ar://${avatarId}` : null;
+    const image = avatarTx ? `ar://${avatarTx.id}` : null;
 
-    if (!avatarId) {
+    if (!avatarTx) {
       console.log('No image provided');
     } else {
-      console.log(`Image uploaded to AR with Id: ${avatarId}`);
+      console.log(`Image uploaded to AR with Id: ${avatarTx.id}`);
     }
 
     const metadataString = JSON.stringify({
@@ -57,14 +58,16 @@ export const bundlrUpload = async (req: Request, res: Response) => {
     });
 
     // We prefer this approach to the client.store() method as we just want the CID not the name of the file appended to the CID
-    const metadataId = await bundlr.upload(metadataString, {
+    const metadataTx: UploadResponse = await bundlr.upload(metadataString, {
       tags: [{ name: 'Content-Type', value: 'application/json' }],
     });
 
-    console.log(`Metadata uploaded to AR with CID ${metadataId}`);
+    console.log(`Metadata uploaded to AR with TX ${metadataTx.id}`);
 
-    console.log('Returning metadata CID and avatar CID', metadataId, avatarId);
-    res.status(200).json({ metadataCid: metadataId, avatarCid: avatarId });
+    console.log('Returning metadata and avatar ', metadataTx.id, avatarTx?.id);
+    res
+      .status(200)
+      .json({ metadataCid: metadataTx.id, avatarCid: avatarTx?.id });
   } catch (e) {
     console.error(e);
     res.status(500).json({ message: 'Something went wrong' });
