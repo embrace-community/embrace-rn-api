@@ -22,6 +22,7 @@ export const bundlrUpload = async (req: Request, res: Response) => {
   await bundlr.ready();
 
   const { file } = req;
+  console.log('Filesize', file?.size);
 
   const { name, handle } = req.body;
 
