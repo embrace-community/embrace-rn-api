@@ -32,7 +32,7 @@ export const nftStorageUpload = async (req: Request, res: Response) => {
       avatarCid = await nftStorage.storeBlob(imageBlob);
     }
 
-    const image = avatarCid ? `ipfs://${avatarCid}` : null;
+    const imageUri = avatarCid ? `ipfs://${avatarCid}` : null;
 
     if (!avatarCid) {
       console.log('No image provided');
@@ -45,7 +45,7 @@ export const nftStorageUpload = async (req: Request, res: Response) => {
         JSON.stringify({
           name,
           description: `Embrace Community profile NFT for ${handle}`,
-          image,
+          image: imageUri,
           properties: {
             handle,
           },
@@ -64,7 +64,9 @@ export const nftStorageUpload = async (req: Request, res: Response) => {
       metadataCid,
       avatarCid,
     );
-    res.status(200).json({ metadataCid, avatarCid });
+    res
+      .status(200)
+      .json({ metadata: `ipfs://${metadataCid}`, avatar: imageUri });
   } catch (e) {
     console.error(e);
     res.status(500).json({ message: 'Something went wrong' });

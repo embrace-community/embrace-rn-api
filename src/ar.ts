@@ -22,7 +22,6 @@ export const bundlrUpload = async (req: Request, res: Response) => {
   await bundlr.ready();
 
   const { file } = req;
-  console.log('Filesize', file?.size);
 
   const { name, handle } = req.body;
 
@@ -41,7 +40,7 @@ export const bundlrUpload = async (req: Request, res: Response) => {
       });
     }
 
-    const image = avatarTx ? `ar://${avatarTx.id}` : null;
+    const imageUri = avatarTx ? `ar://${avatarTx.id}` : null;
 
     if (!avatarTx) {
       console.log('No image provided');
@@ -52,7 +51,7 @@ export const bundlrUpload = async (req: Request, res: Response) => {
     const metadataString = JSON.stringify({
       name,
       description: `Embrace Community profile NFT for ${handle}`,
-      image,
+      image: imageUri,
       properties: {
         handle,
       },
@@ -68,7 +67,7 @@ export const bundlrUpload = async (req: Request, res: Response) => {
     console.log('Returning metadata and avatar ', metadataTx.id, avatarTx?.id);
     res
       .status(200)
-      .json({ metadataCid: metadataTx.id, avatarCid: avatarTx?.id });
+      .json({ metadata: `ar://${metadataTx.id}`, avatar: imageUri });
   } catch (e) {
     console.error(e);
     res.status(500).json({ message: 'Something went wrong' });
